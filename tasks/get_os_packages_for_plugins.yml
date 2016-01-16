@@ -1,0 +1,16 @@
+---
+# Ansible playbook to install OS packages required by Vim plugins
+
+- name: Install required DEB packages for default Vundle plugins
+  apt: name={{ item }}
+  with_items: "{{ default_plugins|default([])|selectattr('required_debs', 'defined')|map(attribute='required_debs')|list }}"
+  when: ansible_os_family == 'Debian'
+        and default_plugins is defined
+        and install_packages_for_plugins == True
+
+- name: Install required DEB packages for more Vundle plugins
+  apt: name={{ item }}
+  with_items: "{{ more_plugins|default([])|selectattr('required_debs', 'defined')|map(attribute='required_debs')|list }}"
+  when: ansible_os_family == 'Debian'
+        and more_plugins is defined
+        and install_packages_for_plugins == True

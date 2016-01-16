@@ -1,0 +1,22 @@
+---
+# Ansible playbook to prepare which Vim plugins will be used
+
+- name: Set names of excluded plugins
+  set_fact: names_of_excluded_plugins="{{ excluded_plugins|default([])|map(attribute='name')|list|default([])|unique }}"
+
+- name: Create directory to store Vundle plugins declarations
+  file: path={{ vim_home_dir_full_path }}/vundle_plugins state=directory
+
+- name: Generate declarations for default Vundle plugins
+  template: src=vundle/plugin_declaration.j2 dest={{ vim_home_dir_full_path }}/vundle_plugins/{{ item.name }}.vim
+  with_items: default_plugins
+  when: default_plugins is defined and default_plugins|length > 0
+        and item.name not in names_of_excluded_plugins
+        and plugin_manager == 'vundle'
+
+- name: Generate declarations for more Vundle plugins
+  template: src=vundle/plugin_declaration.j2 dest={{ vim_home_dir_full_path }}/vundle_plugins/{{ item.name }}.vim
+  with_items: more_plugins
+  when: more_plugins is defined and more_plugins|length > 0
+        and item.name not in names_of_excluded_plugins
+        and plugin_manager == 'vundle'

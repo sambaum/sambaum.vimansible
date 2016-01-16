@@ -1,0 +1,15 @@
+#jinja2: lstrip_blocks: True
+" {{ ansible_managed }}
+" based on https://github.com/mutewinter/dot_vim/blob/master/vimrc
+
+" let's use Vundle plugin manager
+source ~/{{ vim_home_dir_short_path }}/vundle.vim
+
+" Automatically detect file types. (must turn on after Vundle)
+filetype plugin indent on
+
+{% for include in vimrc_includes %}
+" {{ include.comment }}
+source {{ include.source }}
+
+{% endfor %}

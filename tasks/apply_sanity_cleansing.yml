@@ -1,0 +1,117 @@
+---
+# Ansible playbook to remove outdated or unwanted Vim plugins
+
+- name: Get names of excluded plugins
+  set_fact:
+    names_of_excluded_plugins:
+      "{{ excluded_plugins|default([])|map(attribute='name')|list|default([])|unique }}"
+
+- name: Get names of default plugins
+  set_fact:
+    names_of_default_plugins:
+      "{{ default_plugins|default([])|map(attribute='name')|list|default([])|unique }}"
+
+- name: Get names of more plugins
+  set_fact:
+    names_of_more_plugins:
+      "{{ more_plugins|default([])|map(attribute='name')|list|default([])|unique }}"
+
+- name: Get names of wanted plugins
+  set_fact:
+    names_of_wanted_plugins:
+      "{{ names_of_default_plugins|union(names_of_more_plugins)|difference(names_of_excluded_plugins) }}"
+
+- name: Get the list of full file names of wanted plugins declarations
+  set_fact:
+    full_filenames_of_wanted_plugins_declarations:
+      "{{ names_of_wanted_plugins|default([])|map('regex_replace', '(.+)', vundle_plugins_defs_dir + '\\\\1' + vundle_plugins_defs_ext)|list|default([])|unique }}"
+
+  # see http://stackoverflow.com/questions/16385507/ansible-delete-unmanaged-files-from-directory
+  # the returned paths in stdout_lines would be like '/home/user/.vim/vundle_plugins/nerdtree.vim'
+  # TODO: consider the case when the 'ls' command returns an error
+- name: Get names of existing .vim files in 'vundle_plugins' directory
+  shell: ls -1 {{ vundle_plugins_defs_dir }}*{{ vundle_plugins_defs_ext }}
+  register: full_filenames_of_existing_plugins_declarations
+
+- name: Get the list of full file names of plugins declarations that will be removed
+  set_fact:
+    full_filenames_of_plugins_declarations_to_remove:
+      "{{ full_filenames_of_existing_plugins_declarations.stdout_lines|difference(full_filenames_of_wanted_plugins_declarations) }}"
+
+- name: Delete unwanted or unneeded .vim files of plugins declarations in 'vundle_plugins' directory
+  file: path={{ item }} state=absent
+  with_items: full_filenames_of_plugins_declarations_to_remove
+  when: plugin_manager == 'vundle'
+
+  ## now let's clean the actual plugins directories and files
+  ## (they could use a considerable amount of storage space)
+  ## the assumption is that the name of the plugin directory coincides
+  ## with the plugin name
+
+  # the returned paths in stdout_lines would be like 'nerdtree'
+- name: Get names of existing plugins directories in the 'bundle' directory
+  shell: ls -1 {{ vundle_plugins_files_dir }}
+  register: dir_names_of_existing_plugins
+  when: plugin_manager == 'vundle'
+
+- name: Simplify the previous output of directories names of existing plugins
+  set_fact:
+    dir_names_of_existing_plugins:
+      "{{ dir_names_of_existing_plugins.stdout_lines|default([])|list|unique }}"
+
+- name: Preserve the main 'vundle' plugin directory if indicated
+  set_fact:
+    dir_names_of_existing_plugins:
+      "{{ dir_names_of_existing_plugins|difference(['vundle']) }}"
+  when: vundle_keep_vundle_dir_when_cleansing == True
+
+- name: Get the list of directories names of plugins that will be removed
+  set_fact:
+    dir_names_of_plugins_to_remove:
+      "{{ dir_names_of_existing_plugins|difference(names_of_wanted_plugins) }}"
+
+- name: Get the list of full directories names of plugins that will be removed
+  set_fact:
+    full_dir_names_of_plugins_to_remove:
+      "{{ dir_names_of_plugins_to_remove|map('regex_replace', '(.+)', vundle_plugins_files_dir + '\\\\1')|list|default([])|unique }}"
+
+- name: Delete unwanted or unneeded plugins directories in 'bundle' directory
+  file: path={{ item }} state=absent
+  with_items: full_dir_names_of_plugins_to_remove
+  when: plugin_manager == 'vundle'
+
+  ##
+  ## now let's try to remove as many OS packages as possible, associated
+  ## to unwanted/deleted plugins
+  ##
+
+- name: Get the single names of some of the previously found (and possibly deleted) plugins declarations
+  set_fact:
+    names_of_found_plugins_declarations:
+      "{{ full_filenames_of_existing_plugins_declarations.stdout_lines|map('regex_replace', vundle_plugins_defs_dir + '(.+)' + vundle_plugins_defs_ext, '\\\\1')|list|default([])|unique }}"
+
+- name: Get the single names of some of the previously deleted and excluded plugins
+  set_fact:
+    names_of_some_deleted_and_excluded_plugins:
+      "{{ names_of_found_plugins_declarations|difference(names_of_wanted_plugins)|union(names_of_excluded_plugins) }}"
+
+- name: Combine all the plugins declared (default, more and excluded)
+  set_fact:
+    all_plugins_declared:
+      "{{ default_plugins|default([])|union(more_plugins|default([]))|union(excluded_plugins|default([])) }}"
+
+- name: Get details of all the plugins requiring DEBs packages
+  set_fact:
+    all_plugins_requiring_debs:
+      #"{{ xxx|default([])|selectattr('required_debs', 'defined')|map(attribute='required_debs')|list }}"
+      "{{ all_plugins_declared|default([])|selectattr('required_debs', 'defined')|list }}"
+
+- name: Try to remove DEB packages required by some no longer needed plugins
+  apt: name={{ item.1 }} state=absent
+  with_subelements:
+    - all_plugins_requiring_debs
+    - required_debs
+  when:
+    "remove_packages_of_removed_plugins == True
+    and ansible_os_family == 'Debian'
+    and '{{ item.0.name }}' in names_of_some_deleted_and_excluded_plugins"

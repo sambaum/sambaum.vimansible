@@ -1,0 +1,17 @@
+---
+# Ansible playbook to deal with several Vim configuration files
+
+- name: Create Vim user configuration directory
+  file: path={{ vim_home_dir_full_path }} state=directory
+
+- name: Create .vimrc user configuration file for Vim
+  template: src=vundle/vimrc.j2 dest={{ vim_personal_config_file_full_path }}
+
+- name: Create vundle.vim configuration file for Vim
+  template: src=vundle/vundle.vim.j2 dest={{ vim_home_dir_full_path }}/vundle.vim
+  
+  # template name general/config.vim.j2 will become ~/.vim/config.vim file
+  # template name vundle/plugins.vim.j2 will become ~/.vim/plugins.vim file
+- name: Create other files possibly included from .vimrc configuration file
+  template: src={{ item.template }} dest={{ vim_home_dir_full_path }}/{{ item.template|basename|replace('.j2', '')}}
+  with_items: vimrc_includes

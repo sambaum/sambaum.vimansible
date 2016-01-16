@@ -1,0 +1,297 @@
+---
+# Variables related to Vim customizations
+
+# names of OS packages to install
+install_base_packages: True
+vim_package_name: vim
+git_package_name: git
+
+#
+install_packages_for_plugins: True
+apply_shell_commands_for_plugins: True
+remove_packages_of_removed_plugins: False
+
+# plugin manager
+plugin_manager: vundle
+install_vim_plugins: True
+do_initial_sanity_cleansing: True
+
+# Vim user configuration directory and main file
+vim_home_dir_full_path: '{{ ansible_env.HOME }}/.vim'
+vim_home_dir_short_path: .vim
+vim_personal_config_file_full_path: '{{ ansible_env.HOME }}/.vimrc'
+
+# some Vundle stuff
+vundle_plugins_defs_dir: '{{ vim_home_dir_full_path }}/vundle_plugins/'
+vundle_plugins_defs_ext: .vim
+vundle_plugins_files_dir: '{{ vim_home_dir_full_path }}/bundle/'
+vundle_keep_vundle_dir_when_cleansing: True
+
+# some flags about which modular files to source from .vimrc configuration file
+# (the order matters, I think)
+vimrc_includes:
+  - source: ~/{{ vim_home_dir_short_path }}/config.vim
+    comment: All of the Vim configuration
+    template: general/config.vim.j2
+#  - source: ~/{{ vim_home_dir_short_path }}/commands.vim
+#    comment: New commands
+#    template: general/commands.vim.j2
+#  - source: ~/{{ vim_home_dir_short_path }}/mappings.vim
+#    comment: All hotkeys, not dependant on plugins, are mapped here
+#    template: general/mappings.vim.j2
+  - source: ~/{{ vim_home_dir_short_path }}/plugins.vim
+    comment: Load plugin-specific configuration
+    template: vundle/plugins.vim.j2
+  - source: ~/{{ vim_home_dir_short_path }}/functions.vim
+    comment: Small custom functions
+    template: general/functions.vim.j2
+  - source: ~/{{ vim_home_dir_short_path }}/autocmds.vim
+    comment: Auto commands
+    template: general/autocmds.vim.j2
+#  - source: ~/{{ vim_home_dir_short_path }}/last.vim
+#    comment: Small last minute custom settings
+#    template: general/last.vim.j2
+
+# protocol to be used when downloading Vundle
+get_vundle_via_https_protocol: True
+
+# settings for Vim configuration files
+# see http://vimcolors.com
+colorscheme: bubblegum
+vim_create_files_backups: False
+vim_backupdir: ''
+vim_create_swap_files: True
+vim_swap_dir: '.'
+
+# some plugins to get via the plugin manager
+default_plugins:
+  - name: ansible-vim
+    source: pearofducks/ansible-vim
+    comment: A vim plugin for syntax highlighting Ansible's common filetypes
+  - name: vim-colorschemes
+    source: flazz/vim-colorschemes
+    comment: One stop shop for vim colorschemes
+  - name: nerdtree
+    source: scrooloose/nerdtree
+    comment: A tree explorer plugin for vim
+    initializations:
+      - "nnoremap <silent><leader>nn :NERDTreeToggle<CR>:wincmd =<CR>"
+      - "nnoremap <silent><leader>nf :NERDTreeFind<CR>:wincmd =<CR>"
+      - "let g:NERDTreeShowBookmarks = 1"
+      - "let g:NERDTreeChDirMode = 1"
+      - "let g:NERDTreeMinimalUI = 1"
+      - "let g:NERDTreeForceMac = 1"
+      - '" Close Vim if NERDTree is the last buffer'
+      - 'autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType")'
+      - '  \&& b:NERDTreeType == "primary") | q | endif'
+  - name: tagbar
+    source: majutsushi/tagbar
+    comment: Vim plugin that displays tags in a window, ordered by scope
+    initializations:
+      - 'nmap <F8> :TagbarToggle<CR>'
+    required_debs:
+      - exuberant-ctags
+  - name: html5.vim
+    source: othree/html5.vim
+    comment: HTML5 omnicomplete and syntax
+  - name: YouCompleteMe
+    source: blueyed/YouCompleteMe
+    comment: A code-completion engine for Vim
+    initializations:
+      - 'let g:ycm_complete_in_comments = 1'
+      - 'let g:ycm_seed_identifiers_with_syntax = 1'
+      - 'let g:ycm_collect_identifiers_from_comments_and_strings = 1'
+      - 'let g:ycm_use_ultisnips_completer = 1'
+      - '" see http://stackoverflow.com/questions/3105307/how-do-you-automatically-remove-the-preview-window-after-autocompletion-in-vim'
+      - 'let g:ycm_autoclose_preview_window_after_insertion = 1'
+      - 'let g:ycm_filetype_specific_completion_to_disable = {'
+      - "    \\ 'ruby' : 1,"
+      - "    \\ 'javascript' : 1,"
+      - "    \\ 'jsx' : 1,"
+      - '    \}'
+    required_debs:
+      - build-essential
+      - cmake
+      - python-dev
+    shell_commands:
+      - cmd: ./install.sh
+        dir: "{{ vim_home_dir_full_path }}/bundle/YouCompleteMe"
+  - name: ZoomWin
+    source: ZoomWin
+    comment: Zoom Window to Full Size
+    initializations:
+      - 'nnoremap <silent> <leader>wo :ZoomWin<CR>'
+  - name: vim-surround
+    source: tpope/vim-surround
+    comment: quoting/parenthesizing made simple
+    initializations:
+      - '" Use # to get a variable interpolation (inside of a string)}'
+      - '" ysiw#   Wrap the token under the cursor in #{}'
+      - '" Thanks to http://git.io/_XqKzQ'
+      - 'let g:surround_35  = "#{\r}"'
+      - '" Shortcuts for common surrounds'
+      - 'map <leader>y# ysi"#'
+  - name: vim-startify
+    source: mhinz/vim-startify
+    comment: A fancy start screen for Vim
+    initializations:
+      - 'let g:startify_list_order = ['
+      - " \\ ['   Last modified'],"
+      - " \\ 'dir',"
+      - " \\ ['   Recent'],"
+      - " \\ 'files',"
+      - " \\ ['   Saved sessions'],"
+      - " \\ 'sessions',"
+      - " \\ ]"
+      - 'let g:startify_skiplist = ['
+      - "     \\ 'COMMIT_EDITMSG',"
+      - "     \\ $VIMRUNTIME .'/doc',"
+      - "     \\ 'bundle/.*/doc',"
+      - "     \\ ]"
+      - 'let g:startify_files_number = 10'
+      - "let g:startify_custom_indices = ['a', 'd', 'f', 'g', 'h']"
+      - 'let g:startify_change_to_dir = 0'
+      - 'hi StartifyBracket ctermfg=240'
+      - 'hi StartifyFooter  ctermfg=111'
+      - 'hi StartifyHeader  ctermfg=203'
+      - 'hi StartifyPath    ctermfg=245'
+      - 'hi StartifySlash   ctermfg=240'
+      - '" Show Startify'
+      - 'autocmd VimEnter *'
+      - "      \\ if !argc() |"
+      - "      \\   Startify |"
+      - '      \   execute "normal \<c-w>w" |'
+      - "      \\ endif"
+      - '" Keep NERDTree from opening a split when startify is open'
+      - 'autocmd FileType startify setlocal buftype='
+      - 'let g:startify_recursive_dir = 1'
+  - name: vim-snippets
+    source: honza/vim-snippets
+    comment: vim-snipmate default snippets (Previously snipmate-snippets)
+  - name: vim-signify
+    source: mhinz/vim-signify
+    comment: Show a diff via Vim sign column
+    initializations:
+      - 'nmap <leader>gj <plug>(signify-next-hunk)'
+      - 'nmap <leader>gk <plug>(signify-prev-hunk)'
+      - '" Makes switching buffers in large repos have no delay'
+      - 'let g:signify_update_on_bufenter = 0'
+      - 'let g:signify_sign_overwrite = 0'
+  - name: vim-session
+    source: xolox/vim-session
+    comment: Extended session management for Vim (:mksession on steroids)
+    initializations:
+      - 'let g:session_autosave = 0'
+      - 'let g:session_autoload = 0'
+      - 'nnoremap <leader>os :OpenSession<CR>'
+      - '" use the same default directory used by vim-startify to store sessions'
+      - '" as indicated in https://github.com/xolox/vim-session/issues/75'
+      - 'let g:session_directory = "~/{{ vim_home_dir_short_path }}/session"'
+  - name: vim-numbertoggle
+    source: jeffkreeftmeijer/vim-numbertoggle
+    comment: Toggles between relative and absolute line numbers automatically
+  - name: vim-misc
+    source: xolox/vim-misc
+    comment: Miscellaneous auto-load Vim scripts (I've noticed it's required by other plugins)
+  - name: vim-json
+    source: elzr/vim-json
+    comment: 'A better JSON for Vim: distinct highlighting of keywords vs values, JSON-specific (non-JS) warnings, quote concealing. Pathogen-friendly'
+  - name: vim-javascript
+    source: pangloss/vim-javascript
+    comment: Vastly improved Javascript indentation and syntax support in Vim
+  - name: indentLine
+    source: Yggdroot/indentLine
+    comment: A vim plugin to display the indention levels with thin vertical lines
+  - name: vim-flake8
+    source: nvie/vim-flake8
+    comment: "Flake8 plugin for Vim\n\" vim-flake8 is a Vim plugin that runs the currently open file through\n\" Flake8, a static syntax and style checker for Python source code.\n\" It supersedes both vim-pyflakes and vim-pep8"
+    required_debs:
+      #- python3-flake8
+      - python-flake8
+  - name: vim-endwise
+    source: tpope/vim-endwise
+    comment: 'endwise.vim: wisely add "end" in ruby, endfunction/endif/more in vim script, etc'
+  - name: vim-easytags
+    source: xolox/vim-easytags
+    comment: Automated tag file generation and syntax highlighting of tags in Vim
+    required_debs:
+      - exuberant-ctags
+  - name: vim-css3-syntax
+    source: hail2u/vim-css3-syntax
+    comment: "Add CSS3 syntax support to vim's built-in `syntax/css.vim`"
+  - name: vim-coloresque
+    source: gorodinskiy/vim-coloresque
+    comment: css/less/sass/html color preview for vim
+  - name: undotree
+    source: mbbill/undotree
+    comment: The ultimate undo history visualizer for Vim
+  - name: ultisnips
+    source: SirVer/ultisnips
+    comment: UltiSnips - The ultimate snippet solution for Vim
+    initializations:
+      - "\"let g:UltiSnipsSnippetDirectories=['MyUltiSnips']"
+      - "let g:UltiSnipsExpandTrigger='<C-j>'"
+      - "let g:UltiSnipsJumpForwardTrigger='<C-j>'"
+      - "let g:UltiSnipsJumpBackwardTrigger='<C-h>'"
+  - name: tabular
+    source: godlygeek/tabular
+    comment: Vim script for text filtering and alignment
+    initializations:
+      - 'nnoremap <Leader>t= :Tabularize assignment<CR>'
+      - 'vnoremap <Leader>t= :Tabularize assignment<CR>'
+      - 'nnoremap <Leader>t: :Tabularize symbol<CR>'
+      - 'vnoremap <Leader>t: :Tabularize symbol<CR>'
+      - 'nnoremap <Leader>t, :Tabularize comma<CR>'
+      - 'vnoremap <Leader>t, :Tabularize comma<CR>'
+  - name: nerdcommenter
+    source: scrooloose/nerdcommenter
+    comment: Vim plugin for intensely orgasmic commenting
+  - name: MatchTagAlways
+    source: Valloric/MatchTagAlways
+    comment: A Vim plugin that always highlights the enclosing html/xml tags
+    initializations:
+      - "let g:mta_filetypes = {"
+      - "    \\ 'html' : 1,"
+      - "    \\ 'xhtml' : 1,"
+      - "    \\ 'xml' : 1,"
+      - "    \\ 'handlebars' : 1,"
+      - "    \\ 'eruby' : 1,"
+      - "    \\}"
+  - name: favorite-vim-colorscheme
+    source: axiaoxin/favorite-vim-colorscheme
+    comment: "axiaoxin's favorite Vim color scheme, it is extracted from https://github.com/chriskempson/tomorrow-them"
+  - name: emmet-vim
+    source: mattn/emmet-vim
+    comment: "emmet for vim: http://emmet.io/ http://mattn.github.io/emmet-vim"
+  - name: delimitMate
+    source: Raimondi/delimitMate
+    comment: Vim plugin, provides insert mode auto-completion for quotes, parens, brackets, etc.
+    initializations:
+      - 'let g:delimitMate_expand_cr=1'
+      - 'let g:delimitMate_expand_space=1'
+
+# more_plugins will be available to playbooks using this role
+# and follows the same syntax and fields as default_plugins
+# more_plugins:
+  #- name:
+  #  source:
+  #  comment:
+  #  required_debs:
+  #    - a_package
+  #    - b_package
+  #  initializations:
+  #    - set x=y
+  #    - 'set x="y"'
+  #  shell_commands:
+  #    - dir: /tmp/
+  #    - cmd: ls -lh
+#
+
+# some plugins we don't want or we don't need
+#excluded_plugins:
+#  - name: Whatever
+#    reason: Just a sample plugin to test exclusions
+#    required_debs:
+#      - a_package
+#      - b_package
+#      - c_package

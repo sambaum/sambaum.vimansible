@@ -1,0 +1,14 @@
+#jinja2: lstrip_blocks: True
+" {{ ansible_managed }}
+{% if item.comment is defined and item.comment|length > 0 %}
+" {{ item.comment }}
+{% endif %}
+if exists('g:vundle_installing_plugins')
+  Plugin '{{ item.source }}'
+  finish
+endif
+{% if item.initializations is defined and item.initializations|length > 0 %}
+  {% for line in item.initializations %}
+{{ line }}
+  {% endfor %}
+{% endif %}

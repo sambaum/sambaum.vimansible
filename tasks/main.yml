@@ -1,0 +1,31 @@
+---
+# Tasks to get a Vim editor with custom configuration, based on existing
+# "plugins" managed by "plugins manager" software
+
+- include: install_base_packages.yml
+  when: install_base_packages is defined and install_packages == True
+  tags: packages
+
+- include: generate_config_files.yml
+  tags: config
+
+- include: get_vundle.yml
+  when: plugin_manager == 'vundle'
+  tags: manager
+
+- include: get_os_packages_for_plugins.yml
+  tags: packages
+
+- include: prepare_vim_plugins.yml
+  tags: plugins
+
+- include: apply_sanity_cleansing.yml
+  when: do_initial_sanity_cleansing is defined and do_initial_sanity_cleansing == True
+  tags: cleansing
+
+- include: install_vim_plugins.yml
+  when: install_vim_plugins is defined and install_vim_plugins == True
+  tags: plugins
+
+- include: postprocess_vim_plugins.yml
+  tags: plugins

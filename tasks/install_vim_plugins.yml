@@ -1,0 +1,9 @@
+---
+# Ansible playbook to install Vim plugins
+
+  # see http://stackoverflow.com/questions/33672491/how-to-use-ansible-to-provision-vim-vundle-plugin
+  # the final part (|| true) is to get a return code of 0
+  # because vim command returns 1 (I don't know why!)
+- name: Install Vundle plugins through 'vim' command
+  shell: vim -E -s -c "source {{ vim_personal_config_file_full_path }}" -c PluginInstall -c qa || true
+  when: plugin_manager == 'vundle'
