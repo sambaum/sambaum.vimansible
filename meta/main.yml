@@ -1,0 +1,19 @@
+---
+# Role metadata
+
+galaxy_info:
+  author: rodolfojcj
+  description: Role for customizing the Vim editor using a plugin manager and several existing plugins
+  license: "license (MIT, Apache)"
+  min_ansible_version: 1.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - wily
+  galaxy_tags:
+    - vim
+    - vi
+    - editor
+
+dependencies: []
