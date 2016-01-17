@@ -14,7 +14,7 @@ colorscheme {{ vimansible_colorscheme|default('default') }}
 "if $TERM =~ '-256color'
 "   set t_Co=256
 "endif
-set t_Co={{ t_Co|default('256') }}
+set t_Co={{ vimansible_t_Co|default('256') }}
 
 " -----------------------------
 " File Locations
