@@ -59,7 +59,7 @@ vimansible_get_vundle_via_https_protocol: True
 # see http://vimcolors.com
 vimansible_colorscheme: bubblegum
 vimansible_vim_create_files_backups: False
-vimansible_vim_backupdir: ''
+vimansible_vim_backupdir: '.'
 vimansible_vim_create_swap_files: True
 vimansible_vim_swap_dir: '.'
 
