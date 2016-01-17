@@ -5,5 +5,5 @@
   # the final part (|| true) is to get a return code of 0
   # because vim command returns 1 (I don't know why!)
 - name: Install Vundle plugins through 'vim' command
-  shell: vim -E -s -c "source {{ vim_personal_config_file_full_path }}" -c PluginInstall -c qa || true
-  when: plugin_manager == 'vundle'
+  shell: vim -E -s -c "source {{ vimansible_vim_personal_config_file_full_path }}" -c PluginInstall -c qa || true
+  when: vimansible_plugin_manager == 'vundle'

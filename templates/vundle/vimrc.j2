@@ -3,12 +3,12 @@
 " based on https://github.com/mutewinter/dot_vim/blob/master/vimrc
 
 " let's use Vundle plugin manager
-source ~/{{ vim_home_dir_short_path }}/vundle.vim
+source ~/{{ vimansible_vim_home_dir_short_path }}/vundle.vim
 
 " Automatically detect file types. (must turn on after Vundle)
 filetype plugin indent on
 
-{% for include in vimrc_includes %}
+{% for include in vimansible_vimrc_includes %}
 " {{ include.comment }}
 source {{ include.source }}
 

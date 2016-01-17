@@ -2,7 +2,7 @@
 # Ansible playbook to install the minimum required packages for Vim and its customization
 
 - name: Install Vim
-  apt: name={{ vim_package_name }}
+  apt: name={{ vimansible_vim_package_name }}
 
 - name: Install Git to download Vim plugins
-  apt: name={{ git_package_name }}
+  apt: name={{ vimansible_git_package_name }}

@@ -8,7 +8,7 @@ set nocompatible
 " Color
 " ---------------
 set background={{ background|default('light') }}
-colorscheme {{ colorscheme|default('default') }}
+colorscheme {{ vimansible_colorscheme|default('default') }}
 
 " Force 256 color mode if available
 "if $TERM =~ '-256color'
@@ -19,15 +19,15 @@ set t_Co={{ t_Co|default('256') }}
 " -----------------------------
 " File Locations
 " -----------------------------
-set backupdir={{ vim_backupdir|default('') }}
-{% if vim_create_swap_files is defined and vim_create_swap_files == True  %}
-set directory={{ vim_swap_dir|default('') }}
+set backupdir={{ vimansible_vim_backupdir|default('') }}
+{% if vimansible_vim_create_swap_files is defined and vimansible_vim_create_swap_files == True  %}
+set directory={{ vimansible_vim_swap_dir|default('') }}
 {% endif %}
-"set spellfile=~/{{ vim_home_dir_short_path }}/spell/custom.en.utf-8.add
+"set spellfile=~/{{ vimansible_vim_home_dir_short_path }}/spell/custom.en.utf-8.add
 " Persistent Undo
 if has('persistent_undo')
   set undofile
-  set undodir=~/{{ vim_home_dir_short_path }}/.undo
+  set undodir=~/{{ vimansible_vim_home_dir_short_path }}/.undo
 endif
 
 " ---------------
@@ -58,7 +58,7 @@ endif
 " ---------------
 syntax enable
 syntax on
-{% if vim_create_files_backups is defined and vim_create_files_backups == True %}
+{% if vimansible_vim_create_files_backups is defined and vimansible_vim_create_files_backups == True %}
 set backup             " Turn on backups
 {% else %}
 set nobackup           " Turn off backups

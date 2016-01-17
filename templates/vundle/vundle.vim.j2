@@ -6,7 +6,7 @@
 set nocompatible " be iMproved
 filetype off     " required!
 
-set runtimepath+=~/{{ vim_home_dir_short_path }}/bundle/vundle/
+set runtimepath+=~/{{ vimansible_vim_home_dir_short_path }}/bundle/vundle/
 call vundle#begin()
 
 " let Vundle manage Vundle, required
@@ -15,10 +15,10 @@ Plugin 'gmarik/vundle'
 " Source all the plugins with a global variable set that ensures only the
 " Plugin 'name' code will be called.
 let g:vundle_installing_plugins = 1
-for file in split(glob('$HOME/{{ vim_home_dir_short_path }}/vundle_plugins/*.vim'), '\n')
+for file in split(glob('$HOME/{{ vimansible_vim_home_dir_short_path }}/vundle_plugins/*.vim'), '\n')
   exe 'source' fnameescape(file)
 endfor
-for file in split(glob('$HOME/{{ vim_home_dir_short_path }}/vundle_plugins/custom/*.vim'), '\n')
+for file in split(glob('$HOME/{{ vimansible_vim_home_dir_short_path }}/vundle_plugins/custom/*.vim'), '\n')
   exe 'source' fnameescape(file)
 endfor
 unlet g:vundle_installing_plugins

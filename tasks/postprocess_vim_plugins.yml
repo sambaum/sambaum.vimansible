@@ -6,15 +6,15 @@
 #    args:
 #      chdir: "{{ item.dir }}"
   shell: cd {{ item.dir }} && {{ item.cmd }}
-  with_items: "{{ default_plugins|default([])|selectattr('shell_commands', 'defined')|map(attribute='shell_commands')|list }}"
-  when: apply_shell_commands_for_plugins == True
-        and default_plugins is defined
+  with_items: "{{ vimansible_default_plugins|default([])|selectattr('shell_commands', 'defined')|map(attribute='shell_commands')|list }}"
+  when: vimansible_apply_shell_commands_for_plugins == True
+        and vimansible_default_plugins is defined
 
 - name: Apply shell commands for more Vim plugins
   #shell: "{{ item.cmd }}"
   shell: cd {{ item.dir }} && {{ item.cmd }}
 #    args:
 #      chdir: "{{ item.dir }}"
-  with_items: "{{ more_plugins|default([])|selectattr('shell_commands', 'defined')|map(attribute='shell_commands')|list }}"
-  when: apply_shell_commands_for_plugins == True
-        and more_plugins is defined
+  with_items: "{{ vimansible_more_plugins|default([])|selectattr('shell_commands', 'defined')|map(attribute='shell_commands')|list }}"
+  when: vimansible_apply_shell_commands_for_plugins == True
+        and vimansible_more_plugins is defined

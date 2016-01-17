@@ -2,69 +2,69 @@
 # Variables related to Vim customizations
 
 # names of OS packages to install
-install_base_packages: True
-vim_package_name: vim
-git_package_name: git
+vimansible_install_base_packages: True
+vimansible_vim_package_name: vim
+vimansible_git_package_name: git
 
 #
-install_packages_for_plugins: True
-apply_shell_commands_for_plugins: True
-remove_packages_of_removed_plugins: False
+vimansible_install_packages_for_plugins: True
+vimansible_apply_shell_commands_for_plugins: True
+vimansible_remove_packages_of_removed_plugins: False
 
 # plugin manager
-plugin_manager: vundle
-install_vim_plugins: True
-do_initial_sanity_cleansing: True
+vimansible_plugin_manager: vundle
+vimansible_install_vim_plugins: True
+vimansible_do_initial_sanity_cleansing: True
 
 # Vim user configuration directory and main file
-vim_home_dir_full_path: '{{ ansible_env.HOME }}/.vim'
-vim_home_dir_short_path: .vim
-vim_personal_config_file_full_path: '{{ ansible_env.HOME }}/.vimrc'
+vimansible_vim_home_dir_full_path: '{{ ansible_env.HOME }}/.vim'
+vimansible_vim_home_dir_short_path: .vim
+vimansible_vim_personal_config_file_full_path: '{{ ansible_env.HOME }}/.vimrc'
 
 # some Vundle stuff
-vundle_plugins_defs_dir: '{{ vim_home_dir_full_path }}/vundle_plugins/'
-vundle_plugins_defs_ext: .vim
-vundle_plugins_files_dir: '{{ vim_home_dir_full_path }}/bundle/'
-vundle_keep_vundle_dir_when_cleansing: True
+vimansible_vundle_plugins_defs_dir: '{{ vimansible_vim_home_dir_full_path }}/vundle_plugins/'
+vimansible_vundle_plugins_defs_ext: .vim
+vimansible_vundle_plugins_files_dir: '{{ vimansible_vim_home_dir_full_path }}/bundle/'
+vimansible_vundle_keep_vundle_dir_when_cleansing: True
 
 # some flags about which modular files to source from .vimrc configuration file
 # (the order matters, I think)
-vimrc_includes:
-  - source: ~/{{ vim_home_dir_short_path }}/config.vim
+vimansible_vimrc_includes:
+  - source: ~/{{ vimansible_vim_home_dir_short_path }}/config.vim
     comment: All of the Vim configuration
     template: general/config.vim.j2
-#  - source: ~/{{ vim_home_dir_short_path }}/commands.vim
+#  - source: ~/{{ vimansible_vim_home_dir_short_path }}/commands.vim
 #    comment: New commands
 #    template: general/commands.vim.j2
-#  - source: ~/{{ vim_home_dir_short_path }}/mappings.vim
+#  - source: ~/{{ vimansible_vim_home_dir_short_path }}/mappings.vim
 #    comment: All hotkeys, not dependant on plugins, are mapped here
 #    template: general/mappings.vim.j2
-  - source: ~/{{ vim_home_dir_short_path }}/plugins.vim
+  - source: ~/{{ vimansible_vim_home_dir_short_path }}/plugins.vim
     comment: Load plugin-specific configuration
     template: vundle/plugins.vim.j2
-  - source: ~/{{ vim_home_dir_short_path }}/functions.vim
+  - source: ~/{{ vimansible_vim_home_dir_short_path }}/functions.vim
     comment: Small custom functions
     template: general/functions.vim.j2
-  - source: ~/{{ vim_home_dir_short_path }}/autocmds.vim
+  - source: ~/{{ vimansible_vim_home_dir_short_path }}/autocmds.vim
     comment: Auto commands
     template: general/autocmds.vim.j2
-#  - source: ~/{{ vim_home_dir_short_path }}/last.vim
+#  - source: ~/{{ vimansible_vim_home_dir_short_path }}/last.vim
 #    comment: Small last minute custom settings
 #    template: general/last.vim.j2
 
 # protocol to be used when downloading Vundle
-get_vundle_via_https_protocol: True
+vimansible_get_vundle_via_https_protocol: True
 
 # settings for Vim configuration files
 # see http://vimcolors.com
-colorscheme: bubblegum
-vim_create_files_backups: False
-vim_backupdir: ''
-vim_create_swap_files: True
-vim_swap_dir: '.'
+vimansible_colorscheme: bubblegum
+vimansible_vim_create_files_backups: False
+vimansible_vim_backupdir: ''
+vimansible_vim_create_swap_files: True
+vimansible_vim_swap_dir: '.'
 
 # some plugins to get via the plugin manager
-default_plugins:
+vimansible_default_plugins:
   - name: ansible-vim
     source: pearofducks/ansible-vim
     comment: A vim plugin for syntax highlighting Ansible's common filetypes
@@ -115,7 +115,7 @@ default_plugins:
       - python-dev
     shell_commands:
       - cmd: ./install.sh
-        dir: "{{ vim_home_dir_full_path }}/bundle/YouCompleteMe"
+        dir: "{{ vimansible_vim_home_dir_full_path }}/bundle/YouCompleteMe"
   - name: ZoomWin
     source: ZoomWin
     comment: Zoom Window to Full Size
@@ -186,7 +186,7 @@ default_plugins:
       - 'nnoremap <leader>os :OpenSession<CR>'
       - '" use the same default directory used by vim-startify to store sessions'
       - '" as indicated in https://github.com/xolox/vim-session/issues/75'
-      - 'let g:session_directory = "~/{{ vim_home_dir_short_path }}/session"'
+      - 'let g:session_directory = "~/{{ vimansible_vim_home_dir_short_path }}/session"'
   - name: vim-numbertoggle
     source: jeffkreeftmeijer/vim-numbertoggle
     comment: Toggles between relative and absolute line numbers automatically
@@ -270,9 +270,9 @@ default_plugins:
       - 'let g:delimitMate_expand_cr=1'
       - 'let g:delimitMate_expand_space=1'
 
-# more_plugins will be available to playbooks using this role
-# and follows the same syntax and fields as default_plugins
-# more_plugins:
+# vimansible_more_plugins will be available to playbooks using this role
+# and follows the same syntax and fields as vimansible_default_plugins
+# vimansible_more_plugins:
   #- name:
   #  source:
   #  comment:
@@ -288,7 +288,7 @@ default_plugins:
 #
 
 # some plugins we don't want or we don't need
-#excluded_plugins:
+#vimansible_excluded_plugins:
 #  - name: Whatever
 #    reason: Just a sample plugin to test exclusions
 #    required_debs:

@@ -3,10 +3,10 @@
 
 - name: Get Vundle from GitHub via https protocol
   git: repo=https://github.com/VundleVim/Vundle.vim.git
-       dest={{ vim_home_dir_full_path }}/bundle/vundle
-  when: get_vundle_via_https_protocol is defined and get_vundle_via_https_protocol == True
+       dest={{ vimansible_vim_home_dir_full_path }}/bundle/vundle
+  when: vimansible_get_vundle_via_https_protocol is defined and vimansible_get_vundle_via_https_protocol == True
 
 - name: Get Vundle from GitHub via git protocol
   git: repo=git://github.com/VundleVim/Vundle.vim.git
-       dest={{ vim_home_dir_full_path }}/bundle/vundle
-  when: get_vundle_via_git_protocol is defined and get_vundle_via_git_protocol == True
+       dest={{ vimansible_vim_home_dir_full_path }}/bundle/vundle
+  when: vimansible_get_vundle_via_git_protocol is defined and vimansible_get_vundle_via_git_protocol == True
