@@ -25,16 +25,19 @@ Usage
 From your Ansible playbook include this role (*vimansible*) and optionally set
 the appropriate values for mainly these variables:
 
-- `default_plugins`: a default list of Vim plugins that I consider useful
-- `more_plugins`: another list to add more plugins to the previous default list
-- `excluded_plugins`: another list to exclude plugins from the lists defined by
-the `default_plugins` and `more_plugins` variables
+- `vimansible_default_plugins`: a default list of Vim plugins that I consider
+useful
+- `vimansible_more_plugins`: another list to add more plugins to the previous
+default list
+- `vimansible_excluded_plugins`: another list to exclude plugins from the lists
+defined by the `vimansible_default_plugins` and `vimansible_more_plugins`
+variables
 
-The `default_plugins` and `more_plugins` list variables contain one or more
-dictionary entries and both variables follow this pattern:
+The `vimansible_default_plugins` and `vimansible_more_plugins` list variables
+contain one or more dictionary entries and both variables follow this pattern:
 
 ```YAML
-    more_plugins:
+    vimansible_more_plugins:
       - name: name_of_plugin
         source: source_of_plugin
         comment: A brief informative note about the plugin
@@ -65,8 +68,9 @@ privileges, but that could mean that the resulting Vim configuration directory
 would end under the `root` user directory (e.g. `/root/.vim/`). To avoid this,
 you could follow any of this options:
 
-* Set the proper values for the variables `vim_home_dir_full_path`,
-`vim_personal_config_file_full_path` and, optionally, `vim_home_dir_short_path`
+* Set the proper values for the variables `vimansible_vim_home_dir_full_path`,
+`vimansible_vim_personal_config_file_full_path` and, optionally,
+`vimansible_vim_home_dir_short_path`
 * Run this role twice from a playbook:
 
   The first time with `sudo` for installing the needed packages with a command
@@ -82,16 +86,18 @@ you could follow any of this options:
    ansible-playbook -v --skip-tags="packages" ~/my-vim-playbook/main.yml
 ```
 
-* Set to `False` the value of the variable `install_packages_for_plugins` so
-the declared operating system packages needed by some Vim plugins are not
-installed by the Ansible task dealing with them in this role. You must find a
-proper way to install those needed packages.
+* Set to `False` the value of the variable
+`vimansible_install_packages_for_plugins` so the declared operating system
+packages needed by some Vim plugins are not installed by the Ansible task
+dealing with them in this role. You must find a proper way to install those
+needed packages.
 
 An important point is the visual appearance of Vim and this role considers that
-through the `colorscheme` variable; you can set it to any value that is a valid
-Vim color scheme. By default it's set to *bubblegum*, which, for me, looks fine
-with a *light* background; however you can use any other you want. It's worth
-mentioning some of the tested color schemes along with my subjective opinion:
+through the `vimansible_colorscheme` variable; you can set it to any value that
+is a valid Vim color scheme. By default it's set to *bubblegum*, which, for me,
+looks fine with a *light* background; however you can use any other you want.
+It's worth mentioning some of the tested color schemes along with my
+subjective opinion:
 
 * 256-grayvim: looks good without setting the Vim t_Co variable
 * 256-grayvim: looks bad when setting the Vim t_Co variable to 256 and using a
@@ -127,7 +133,9 @@ matching html tags) and with t_Co set to 256
 * xoria256: looks so-so with light background and t_Co set to 256
 
 Take note that in this role, by default, the t_Co Vim variable is set to 256 in
-the template that creates the Vim's main configuration file
+the template that creates the Vim's main configuration file, but you can change
+that by declaring the variable `vimansible_t_Co` and assigning it a convenient
+value for you.
 
 Known bugs
 ----------
