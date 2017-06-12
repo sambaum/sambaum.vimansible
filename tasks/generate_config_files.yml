@@ -14,4 +14,4 @@
   # template name vundle/plugins.vim.j2 will become ~/.vim/plugins.vim file
 - name: Create other files possibly included from .vimrc configuration file
   template: src={{ item.template }} dest={{ vimansible_vim_home_dir_full_path }}/{{ item.template|basename|replace('.j2', '')}}
-  with_items: vimansible_vimrc_includes
+  with_items: "{{ vimansible_vimrc_includes }}"
