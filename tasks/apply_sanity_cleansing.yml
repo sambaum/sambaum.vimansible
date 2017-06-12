@@ -106,12 +106,14 @@
       #"{{ xxx|default([])|selectattr('required_debs', 'defined')|map(attribute='required_debs')|list }}"
       "{{ all_plugins_declared|default([])|selectattr('required_debs', 'defined')|list }}"
 
-- name: Try to remove DEB packages required by some no longer needed plugins
-  apt: name={{ item.1 }} state=absent
-  with_subelements:
-    - all_plugins_requiring_debs
-    - required_debs
-  when:
-    "vimansible_remove_packages_of_removed_plugins == True
-    and ansible_os_family == 'Debian'
-    and '{{ item.0.name }}' in names_of_some_deleted_and_excluded_plugins"
+
+#### disable for now
+# - name: Try to remove DEB packages required by some no longer needed plugins
+#   apt: name={{ item.1 }} state=absent
+#   with_subelements:
+#     - all_plugins_requiring_debs
+#     - required_debs
+#   when:
+#     "vimansible_remove_packages_of_removed_plugins == True
+#     and ansible_os_family == 'Debian'
+#     and '{{ item.0.name }}' in names_of_some_deleted_and_excluded_plugins"
