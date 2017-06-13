@@ -7,8 +7,8 @@ vimansible_vim_package_name: vim
 vimansible_git_package_name: git
 
 #
-vimansible_install_packages_for_plugins: False
-vimansible_apply_shell_commands_for_plugins: True
+vimansible_install_packages_for_plugins: True
+vimansible_apply_shell_commands_for_plugins: False
 vimansible_remove_packages_of_removed_plugins: False
 
 # plugin manager
