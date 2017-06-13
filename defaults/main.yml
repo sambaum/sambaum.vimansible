@@ -113,6 +113,7 @@ vimansible_default_plugins:
       - build-essential
       - cmake
       - python-dev
+      - vim-gtk
     shell_commands:
       - cmd: ./install.sh
         dir: "{{ vimansible_vim_home_dir_full_path }}/bundle/YouCompleteMe"
