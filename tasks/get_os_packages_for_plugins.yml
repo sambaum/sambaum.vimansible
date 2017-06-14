@@ -1,6 +1,12 @@
 ---
 # Ansible playbook to install OS packages required by Vim plugins
 
+- name: Add repo for YouCompleteMe to work (temporary)
+  apt_repository:
+    repo: deb http://ppa.launchpad.net/pi-rho/dev/ubuntu xenial main
+    state: present
+    filename: pi-rho-ubuntu-dev-xenial.list
+
 - name: Install required DEB packages for default Vundle plugins
   apt: name={{ item }}
   with_items: "{{ vimansible_default_plugins|default([])|selectattr('required_debs', 'defined')|map(attribute='required_debs')|list }}"
