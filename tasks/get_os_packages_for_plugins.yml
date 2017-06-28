@@ -1,6 +1,11 @@
 ---
 # Ansible playbook to install OS packages required by Vim plugins
 
+- name: Add Key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 779C27D7
+
 - name: Add repo for YouCompleteMe to work (temporary)
   apt_repository:
     repo: deb http://ppa.launchpad.net/pi-rho/dev/ubuntu xenial main
